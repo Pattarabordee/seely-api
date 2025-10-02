@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 // import { CreateFilmRatingDto } from './dto/create-film-rating.dto';
 // import { UpdateFilmRatingDto } from './dto/update-film-rating.dto';
 
@@ -8,8 +10,12 @@ export class FilmRatingsService {
   //   return 'This action adds a new filmRating';
   // }
 
+  constructor(
+    @InjectEntityManager() private readonly entityManager: EntityManager,
+  ) {}
+
   findAll() {
-    return `This action returns all filmRatings`;
+    return this.entityManager.query(`select * from filmRatings`);
   }
 
   // findOne(id: number) {
