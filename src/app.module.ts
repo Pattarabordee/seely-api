@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { FilmRatingsModule } from './film-ratings/film-ratings.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOpts } from './data-source';
+import { GenresModule } from './genres/genres.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { dataSourceOpts } from './data-source';
       }),
     }),
     FilmRatingsModule,
+    GenresModule,
   ],
   controllers: [AppController],
   providers: [AppService],
