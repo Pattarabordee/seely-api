@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('filmRatings')
+@Entity('filmratings')                                //ชื่อ Table ต้องตรงกับใน Database
 export class FilmRating {
   @PrimaryGeneratedColumn()
   id: number;

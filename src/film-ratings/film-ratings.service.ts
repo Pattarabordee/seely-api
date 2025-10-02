@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FilmRating } from './entities/film-rating.entity';
 // import { CreateFilmRatingDto } from './dto/create-film-rating.dto';
 // import { UpdateFilmRatingDto } from './dto/update-film-rating.dto';
 
@@ -11,11 +12,12 @@ export class FilmRatingsService {
   // }
 
   constructor(
-    @InjectEntityManager() private readonly entityManager: EntityManager,
+    @InjectRepository(FilmRating)
+    private readonly repository: Repository<FilmRating>,
   ) {}
 
   findAll() {
-    return this.entityManager.query(`select * from filmRatings`);
+    return this.repository.find();                                      //ใช้หา หรือ เก็บของจาก Database
   }
 
   // findOne(id: number) {
