@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { PasswordRemoverInterceptor } from '@app/interceptors/password-remover.interceptor';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
@@ -12,7 +13,9 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get(':username')                                                 // dynamic
+  // ให้ส่วนนี้ใช้ Interceptor
+  @UseInterceptors(PasswordRemoverInterceptor)
+  @Get(':username')
   findByUsername(@Param('username') username: string) {
     return this.usersService.findByUsername(username);
   }
