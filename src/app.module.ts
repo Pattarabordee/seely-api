@@ -12,7 +12,7 @@ import { GenresModule } from './genres/genres.module';
       useFactory: () => ({
         ...dataSourceOpts,
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: true,                                  //ไม่ควรใช้กับ Database ของ Product จริง
       }),
     }),
     FilmRatingsModule,
