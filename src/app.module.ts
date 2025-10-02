@@ -5,6 +5,9 @@ import { FilmRatingsModule } from './film-ratings/film-ratings.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOpts } from './data-source';
 import { GenresModule } from './genres/genres.module';
+import { UsersModule } from './users/users.module';
+import { APP_PIPE } from '@nestjs/core';
+import { ZodValidationPipe } from 'nestjs-zod';
 
 @Module({
   imports: [
@@ -17,8 +20,12 @@ import { GenresModule } from './genres/genres.module';
     }),
     FilmRatingsModule,
     GenresModule,
+    UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    { provide: APP_PIPE, useClass: ZodValidationPipe },
+    AppService
+  ],
 })
 export class AppModule {}
