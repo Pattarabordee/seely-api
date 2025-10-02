@@ -12,6 +12,11 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @Get(':username')                                                 // dynamic
+  findByUsername(@Param('username') username: string) {
+    return this.usersService.findByUsername(username);
+  }
+
   // @Get()
   // findAll() {
   //   return this.usersService.findAll();
