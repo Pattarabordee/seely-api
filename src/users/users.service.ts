@@ -5,14 +5,27 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 // import { UpdateUserDto } from './dto/update-user.dto';
 
+import bcrypt from 'bcrypt'
+
 @Injectable()
 export class UsersService {
 
   constructor(@InjectRepository(User) private repository: Repository<User>) {}
+  
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    
+    
+    // create hash (เข้ารหัสด้วยอัลกอริธึม bcrypt)
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
 
-  create(createUserDto: CreateUserDto) {
-    console.log('createUserDto', createUserDto)
-    return this.repository.save(createUserDto);
+    // replace hashed to password
+    const user = {
+      ...createUserDto,
+      password: hashedPassword
+    }
+
+    // save new user with hashed password
+    return this.repository.save(user);
   }
 }
 
