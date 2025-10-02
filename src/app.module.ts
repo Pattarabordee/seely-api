@@ -11,6 +11,7 @@ import { dataSourceOpts } from './data-source';
       useFactory: () => ({
         ...dataSourceOpts,
         autoLoadEntities: true,
+        synchronize: true,
       }),
     }),
     FilmRatingsModule,
