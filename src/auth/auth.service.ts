@@ -5,7 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import { TokensDto } from './dto/tokens.dto';
 import bcrypt from 'bcrypt';
 import { LoggedInDto } from './dto/logged-in.dto';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -35,8 +35,17 @@ export class AuthService {
   }
 
   generateTokens(loggedInDto: LoggedInDto): TokensDto {
+    // gen accessToken
     const accessToken = this.jwtService.sign(loggedInDto);
-    return { accessToken };
+
+    // gen refreshToken
+    const refreshTokenOpts: JwtSignOptions = {
+      secret: process.env.REFRESH_JWT_SECRET,
+      expiresIn: process.env.REFRESH_JWT_EXPIRES_IN,
+    };
+    const refreshToken = this.jwtService.sign(loggedInDto, refreshTokenOpts);
+
+    return { accessToken, refreshToken };
   }
 }
 
