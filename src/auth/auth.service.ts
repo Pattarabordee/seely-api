@@ -1,13 +1,24 @@
-import { Injectable } from '@nestjs/common';
-// import { CreateAuthDto } from './dto/create-auth.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
+import { UsersService } from '@app/users/users.service';
+import bcrypt from 'bcrypt';
 import { TokensDto } from './dto/tokens.dto';
-// import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Injectable()
 export class AuthService {
-  login(loginDto: LoginDto): TokensDto {
-    const accessToken = "VALID-TOKEN"
+  constructor(private usersService: UsersService) {}
+
+  async login(loginDto: LoginDto) {
+    // find user by username
+    const user = await this.usersService.findByUsername(loginDto.username);
+
+    // compare hashed-password
+    const matched = await bcrypt.compare(loginDto.password, user.password)
+    if (!matched) {
+      throw new UnauthorizedException(`wrong password: username=${loginDto.username}`)
+    }
+    // return token
+    const accessToken = 'VALID-TOKEN-' + user.username;
     return { accessToken };
   }
 
