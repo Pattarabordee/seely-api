@@ -1,44 +1,42 @@
+// auth.service.ts
+import { UsersService } from '@app/users/users.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { UsersService } from '@app/users/users.service';
-import bcrypt from 'bcrypt';
 import { TokensDto } from './dto/tokens.dto';
+import bcrypt from 'bcrypt';
+import { LoggedInDto } from './dto/logged-in.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
-  async login(loginDto: LoginDto) {
-    // find user by username
+  async login(loginDto: LoginDto): Promise<TokensDto> {
+    // find by username
     const user = await this.usersService.findByUsername(loginDto.username);
 
     // compare hashed-password
-    const matched = await bcrypt.compare(loginDto.password, user.password)
+    const matched = await bcrypt.compare(loginDto.password, user.password);
     if (!matched) {
-      throw new UnauthorizedException(`wrong password: username=${loginDto.username}`)
+      throw new UnauthorizedException(
+        `wrong password: username=${loginDto.username}`,
+      );
     }
     // return token
-    const accessToken = 'VALID-TOKEN-' + user.username;
-    return { accessToken };
+    const loggedInDto: LoggedInDto = {
+      username: user.username,
+      role: user.role,
+    };
+
+    return this.generateTokens(loggedInDto);
   }
 
-  // create(createAuthDto: CreateAuthDto) {
-  //   return 'This action adds a new auth';
-  // }
-
-  // findAll() {
-  //   return `This action returns all auth`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} auth`;
-  // }
-
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} auth`;
-  // }
+  generateTokens(loggedInDto: LoggedInDto): TokensDto {
+    const accessToken = this.jwtService.sign(loggedInDto);
+    return { accessToken };
+  }
 }
+
