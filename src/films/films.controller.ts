@@ -1,15 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { FilmsService } from './films.service';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { LoggedInDto } from '@app/auth/dto/logged-in.dto';
 
 @Controller('films')
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createFilmDto: CreateFilmDto) {
-    return this.filmsService.create(createFilmDto);
+  create(
+    @Body() createFilmDto: CreateFilmDto,
+    @Req() req: { user: LoggedInDto },
+  ) {
+    return this.filmsService.create(createFilmDto, req.user);
   }
 
   @Get()
@@ -22,9 +38,14 @@ export class FilmsController {
     return this.filmsService.findOne(+id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFilmDto: UpdateFilmDto) {
-    return this.filmsService.update(+id, updateFilmDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateFilmDto: UpdateFilmDto,
+    @Req() req: { user: LoggedInDto },
+  ) {
+    return this.filmsService.update(+id, updateFilmDto, req.user);
   }
 
   @Delete(':id')

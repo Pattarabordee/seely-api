@@ -27,7 +27,7 @@ export class Film {
   // @Column({ type: 'float' })
   // recommender_score: number; // คะแนนของผู้แนะนำ (number)
 
-  @Column({ name: 'image_url' })
+  @Column({ name: 'image_url', nullable: true })
   imageUrl: string;
 
   @ManyToOne(() => Genres)
