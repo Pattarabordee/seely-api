@@ -8,13 +8,12 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class FilmsService {
-
   constructor(@InjectRepository(Film) private repository: Repository<Film>) {}
 
   create(createFilmDto: CreateFilmDto, loggedInDto: LoggedInDto) {
     return this.repository.save({
       ...createFilmDto,
-      user: { username: loggedInDto.username }
+      user: { username: loggedInDto.username },
     });
   }
 
@@ -32,14 +31,19 @@ export class FilmsService {
     loggedInDto: LoggedInDto,
   ) {
     return this.repository
-      .findOneByOrFail({ id, user: { username: loggedInDto.username } })            // ตรวจสอบก่อนว่ามี user และ id นี้ มั้ย
-      .then(() => this.repository.save({ id, ...updateFilmDto }))                   // ถ้าหาเจอให้ save
+      .findOneByOrFail({ id, user: { username: loggedInDto.username } }) // ตรวจสอบก่อนว่ามี user และ id นี้ มั้ย
+      .then(() => this.repository.save({ id, ...updateFilmDto })) // ถ้าหาเจอให้ save
       .catch(() => {
-        throw new NotFoundException(`Not found: id=${id}`);                         // ถ้าหาไม่เจอให้โยนทิ้งไป
+        throw new NotFoundException(`Not found: id=${id}`); // ถ้าหาไม่เจอให้โยนทิ้งไป
       });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} film`;
+  remove(id: number, loggedInDto: LoggedInDto) {
+    return this.repository
+      .findOneByOrFail({ id, user: { username: loggedInDto.username } })
+      .then(() => this.repository.delete({ id }))
+      .catch(() => {
+        throw new NotFoundException(`Not found: id=${id}`);
+      });
   }
 }

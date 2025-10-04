@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  HttpCode,
 } from '@nestjs/common';
 import { FilmsService } from './films.service';
 import { CreateFilmDto } from './dto/create-film.dto';
@@ -49,8 +50,11 @@ export class FilmsController {
     return this.filmsService.update(idDto.id, updateFilmDto, req.user);
   }
 
+
+  @HttpCode(204)
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.filmsService.remove(+id);
+  remove(@Param() idDto: IdDto, @Req() req: { user: LoggedInDto }) {
+    this.filmsService.remove(idDto.id, req.user);
   }
 }

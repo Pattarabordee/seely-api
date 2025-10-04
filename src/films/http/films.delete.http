@@ -1,0 +1,36 @@
+### auth login
+# @name u105
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "u105",
+    "password": "changeit"
+}
+
+### create success
+# @ref u105
+# @name filmCreated
+POST http://localhost:3000/api/v1/films
+Authorization: Bearer {{u105.accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Black Mirror",
+  "year": 2011,
+  "review_description": "ซีรีย์แนวไซไฟ-เสียดสีสังคม ที่แต่ละตอนเน้นตั้งคำถามต่อเทคโนโลยีและจริยธรรมมนุษย์",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/en/2/2c/BlackMirrorTitleCard.jpg",
+  "genres": {
+    "id": 4
+  },
+  "filmRating": {
+    "id": 2
+  }
+}
+
+### delete
+# @ref u105
+# @ref filmCreated
+DELETE http://localhost:3000/api/v1/films/{{filmCreated.id}}
+Authorization: Bearer {{u105.accessToken}}
+Content-Type: application/json
