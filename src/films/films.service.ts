@@ -5,6 +5,21 @@ import { LoggedInDto } from '@app/auth/dto/logged-in.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from './entities/film.entity';
 import { Repository } from 'typeorm';
+import { paginate, PaginateConfig, PaginateQuery } from 'nestjs-paginate';
+
+const paginateConfig: PaginateConfig<Film> = {
+  //  กำหนดว่า Column ไหนที่ต้องการให้ใช้ Paginate ด้วยได้
+  sortableColumns: [
+    'id',
+    'title',
+    'avgRating',
+    'ratingCount',
+    'year',
+    'genres',
+    'filmRating',
+  ],
+  searchableColumns: ['title'],
+};
 
 @Injectable()
 export class FilmsService {
@@ -17,12 +32,32 @@ export class FilmsService {
     });
   }
 
-  findAll() {
-    return `This action returns all films`;
+  private queryTemplate() {
+    return this.repository
+      .createQueryBuilder('film')
+      .leftJoinAndSelect('film.genres', 'genres')
+      .leftJoinAndSelect('film.filmRating', 'filmRating')
+      .leftJoin('film.user', 'user')
+      .addSelect('user.id')
+      .addSelect('user.username')
+      .addSelect('user.role');
+  }
+
+  async search(query: PaginateQuery) {
+    const page = await paginate<Film>(
+      query, // limit, page ,sort
+      this.queryTemplate(),
+      paginateConfig,
+    );
+
+    return {
+      data: page.data,
+      meta: page.meta,
+    };
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} film`;
+    return this.queryTemplate().where('film.id = :id', { id }).getOne();
   }
 
   async update(

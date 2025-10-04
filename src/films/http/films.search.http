@@ -1,0 +1,13 @@
+### case: limit page sort
+GET http://localhost:3000/api/v1/films?limit=3&page=1&sortBy=title:ASC
+Content-Type: application/json
+
+
+# ### case: search
+GET http://localhost:3000/api/v1/films?limit=3&page=1&sortBy=name&search=thing
+Content-Type: application/json
+
+
+# ### case: get
+GET http://localhost:3000/api/v1/films/6
+Content-Type: application/json

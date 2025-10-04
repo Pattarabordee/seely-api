@@ -16,6 +16,7 @@ import { UpdateFilmDto } from './dto/update-film.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedInDto } from '@app/auth/dto/logged-in.dto';
 import { IdDto } from '@app/common/dto/id.dto';
+import * as nestjsPaginate from 'nestjs-paginate';
 
 @Controller('films')
 export class FilmsController {
@@ -31,13 +32,13 @@ export class FilmsController {
   }
 
   @Get()
-  findAll() {
-    return this.filmsService.findAll();
+  search(@nestjsPaginate.Paginate() query: nestjsPaginate.PaginateQuery) {
+    return this.filmsService.search(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.filmsService.findOne(+id);
+  findOne(@Param() idDto: IdDto) {
+    return this.filmsService.findOne(idDto.id);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -49,7 +50,6 @@ export class FilmsController {
   ) {
     return this.filmsService.update(idDto.id, updateFilmDto, req.user);
   }
-
 
   @HttpCode(204)
   @UseGuards(AuthGuard('jwt'))
