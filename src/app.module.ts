@@ -10,6 +10,7 @@ import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthModule } from './auth/auth.module';
 import { ConfigifyModule } from '@itgorillaz/configify';
+import { FilmsModule } from './films/films.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ConfigifyModule } from '@itgorillaz/configify';
     GenresModule,
     UsersModule,
     AuthModule,
+    FilmsModule,
   ],
   controllers: [AppController],
   providers: [{ provide: APP_PIPE, useClass: ZodValidationPipe }, AppService],

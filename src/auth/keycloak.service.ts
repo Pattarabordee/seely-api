@@ -1,4 +1,3 @@
-// keycloak.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import client from 'openid-client';
 import { KeycloakConfig } from './keycloak.config';
@@ -52,7 +51,10 @@ export class KeycloakService {
       state,
     };
 
-    const redirectTo: URL = client.buildAuthorizationUrl(await this.getConfig(), parameters);
+    const redirectTo: URL = client.buildAuthorizationUrl(
+      await this.getConfig(),
+      parameters,
+    );
 
     return {
       state,
@@ -67,9 +69,10 @@ export class KeycloakService {
     console.log('keycloakParamDto', keycloakParamDto);
 
     // get idToken & keycloakPayload
-    const { idToken, keycloakPayload } = await this.authorizationByCode(keycloakParamDto);
+    const { idToken, keycloakPayload } =
+      await this.authorizationByCode(keycloakParamDto);
 
-    // upsert user by keycloak id
+    // upset user by keycloak id
     const user: User = await this.usersService.upsertByKeycloakId(
       keycloakPayload.preferred_username,
       keycloakPayload.sub,
@@ -91,14 +94,15 @@ export class KeycloakService {
     keycloakParamDto: KeycloakParamsDto,
   ): Promise<{ idToken: string; keycloakPayload: KeycloakPayload }> {
     // verify code that send from front-end by pkceCodeVerifier & state
-    const tokens: client.TokenEndpointResponse = await client.authorizationCodeGrant(
-      await this.getConfig(),
-      new URL(`${this.keycloakConfig.callbackUrl}?${keycloakParamDto.url}`),
-      {
-        pkceCodeVerifier: keycloakParamDto.codeVerifier,
-        expectedState: keycloakParamDto.state,
-      },
-    )!;
+    const tokens: client.TokenEndpointResponse =
+      await client.authorizationCodeGrant(
+        await this.getConfig(),
+        new URL(`${this.keycloakConfig.callbackUrl}?${keycloakParamDto.url}`),
+        {
+          pkceCodeVerifier: keycloakParamDto.codeVerifier,
+          expectedState: keycloakParamDto.state,
+        },
+      )!;
 
     // check id_toke
     if (!tokens.id_token) {
@@ -110,5 +114,14 @@ export class KeycloakService {
     const keycloakPayload = await this.jwtService.decode(idToken);
 
     return { idToken, keycloakPayload: keycloakPayload };
+  }
+
+  async logout(idToken: string): Promise<string> {
+    const logoutUrl = client.buildEndSessionUrl(await this.getConfig(), {
+      id_token_hint: idToken,
+      post_logout_redirect_uri: this.keycloakConfig.postLogoutRedirectUri,
+    });
+
+    return logoutUrl.href;
   }
 }
