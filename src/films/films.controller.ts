@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   HttpCode,
+  Put,
 } from '@nestjs/common';
 import { FilmsService } from './films.service';
 import { CreateFilmDto } from './dto/create-film.dto';
@@ -17,10 +18,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { LoggedInDto } from '@app/auth/dto/logged-in.dto';
 import { IdDto } from '@app/common/dto/id.dto';
 import * as nestjsPaginate from 'nestjs-paginate';
+import { RatingDto } from './dto/rating.dto';
+import { RatingService } from './rating.service';
 
 @Controller('films')
 export class FilmsController {
-  constructor(private readonly filmsService: FilmsService) {}
+  constructor(
+    private readonly filmsService: FilmsService,
+    private ratingService: RatingService,
+  ) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
@@ -56,5 +62,15 @@ export class FilmsController {
   @Delete(':id')
   remove(@Param() idDto: IdDto, @Req() req: { user: LoggedInDto }) {
     this.filmsService.remove(idDto.id, req.user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put(':id/rating')
+  rating(
+    @Param() idDto: IdDto,
+    @Body() ratingDto: RatingDto,
+    @Req() req: { user: LoggedInDto },
+  ) {
+    return this.ratingService.rate(idDto.id, ratingDto, req.user);
   }
 }
