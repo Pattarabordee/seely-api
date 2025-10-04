@@ -14,6 +14,7 @@ import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LoggedInDto } from '@app/auth/dto/logged-in.dto';
+import { IdDto } from '@app/common/dto/id.dto';
 
 @Controller('films')
 export class FilmsController {
@@ -41,11 +42,11 @@ export class FilmsController {
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param() idDto: IdDto,
     @Body() updateFilmDto: UpdateFilmDto,
     @Req() req: { user: LoggedInDto },
   ) {
-    return this.filmsService.update(+id, updateFilmDto, req.user);
+    return this.filmsService.update(idDto.id, updateFilmDto, req.user);
   }
 
   @Delete(':id')
