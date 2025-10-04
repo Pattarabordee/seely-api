@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { AuthModule } from './auth/auth.module';
+import { ConfigifyModule } from '@itgorillaz/configify';
 
 @Module({
   imports: [
@@ -16,18 +17,16 @@ import { AuthModule } from './auth/auth.module';
       useFactory: () => ({
         ...dataSourceOpts,
         autoLoadEntities: true,
-        synchronize: true,                                  //ไม่ควรใช้กับ Database ของ Product จริง
+        synchronize: true, //ไม่ควรใช้กับ Database ของ Product จริง
       }),
     }),
+    ConfigifyModule.forRootAsync(),
     FilmRatingsModule,
     GenresModule,
     UsersModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [
-    { provide: APP_PIPE, useClass: ZodValidationPipe },
-    AppService
-  ],
+  providers: [{ provide: APP_PIPE, useClass: ZodValidationPipe }, AppService],
 })
 export class AppModule {}
