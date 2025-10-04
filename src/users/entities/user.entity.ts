@@ -1,3 +1,4 @@
+
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum Role {
@@ -7,16 +8,18 @@ export enum Role {
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()               //Auto-increment
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({
     unique: true,
-    nullable: false,                         // user ต้อง unique ไม่ซ้ำ
+    nullable: false,
   })
   username: string;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   password: string;
 
   @Column({
@@ -24,4 +27,7 @@ export class User {
     default: Role.USER,
   })
   role: Role;
+
+  @Column({ name: 'keycloak_id', unique: true, nullable: true })
+  keycloakId: string;
 }
