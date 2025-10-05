@@ -8,7 +8,7 @@ Content-Type: application/json
     "password": "changeit"
 }
 
-### create success
+### create insuccess
 # @ref u105
 # @name filmCreated
 POST http://localhost:3000/api/v1/films
@@ -28,9 +28,46 @@ Content-Type: application/json
   }
 }
 
-### delete
+### delete insuccess
 # @ref u105
 # @ref filmCreated
 DELETE http://localhost:3000/api/v1/films/{{filmCreated.id}}
 Authorization: Bearer {{u105.accessToken}}
+Content-Type: application/json
+
+### auth login
+# @name lpk101
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "username": "lpk101",
+    "password": "changeit"
+}
+
+### create success
+# @ref lpk101
+# @name filmCreated
+POST http://localhost:3000/api/v1/films
+Authorization: Bearer {{lpk101.accessToken}}
+Content-Type: application/json
+
+{
+  "title": "Black Mirror",
+  "year": 2011,
+  "review_description": "ซีรีย์แนวไซไฟ-เสียดสีสังคม ที่แต่ละตอนเน้นตั้งคำถามต่อเทคโนโลยีและจริยธรรมมนุษย์",
+  "imageUrl": "https://upload.wikimedia.org/wikipedia/en/2/2c/BlackMirrorTitleCard.jpg",
+  "genres": {
+    "id": 4
+  },
+  "filmRating": {
+    "id": 2
+  }
+}
+
+### delete
+# @ref lpk101
+# @ref filmCreated
+DELETE http://localhost:3000/api/v1/films/32
+Authorization: Bearer {{lpk101.accessToken}}
 Content-Type: application/json
