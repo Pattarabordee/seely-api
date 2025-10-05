@@ -20,6 +20,9 @@ import { IdDto } from '@app/common/dto/id.dto';
 import * as nestjsPaginate from 'nestjs-paginate';
 import { RatingDto } from './dto/rating.dto';
 import { RatingService } from './rating.service';
+import { RolesGuard } from '@app/auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '@app/users/entities/user.entity';
 
 @Controller('films')
 export class FilmsController {
@@ -28,7 +31,8 @@ export class FilmsController {
     private ratingService: RatingService,
   ) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @Post()
   create(
     @Body() createFilmDto: CreateFilmDto,
@@ -47,7 +51,8 @@ export class FilmsController {
     return this.filmsService.findOne(idDto.id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @Patch(':id')
   update(
     @Param() idDto: IdDto,
@@ -58,13 +63,15 @@ export class FilmsController {
   }
 
   @HttpCode(204)
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param() idDto: IdDto, @Req() req: { user: LoggedInDto }) {
     this.filmsService.remove(idDto.id, req.user);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @Put(':id/rating')
   rating(
     @Param() idDto: IdDto,

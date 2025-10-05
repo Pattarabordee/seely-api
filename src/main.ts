@@ -17,7 +17,7 @@ async function bootstrap() {
 
   // nestjs-paginate
   updateGlobalConfig({
-    defaultLimit: 20,           //  ถ้า Query จะได้ 20 items
+    defaultLimit: 10,           //  ถ้า Query จะได้ 20 items
   });
 
   await app.listen(process.env.PORT ?? 3000);

@@ -10,7 +10,7 @@
   
   ### case: u104 rating
   # @ref u104
-  PUT  http://localhost:3000/api/v1/films/9/rating
+  PUT  http://localhost:3000/api/v1/films/30/rating
   Authorization: Bearer {{u104.accessToken}}
   Content-Type: application/json
   
@@ -42,3 +42,23 @@
   
   ### case: view films 9
   GET  http://localhost:3000/api/v1/films/9
+
+  ### lpk102 login
+  # @name lpk102
+  POST http://localhost:3000/api/v1/auth/login
+  Content-Type: application/json
+  
+  {
+      "username": "lpk102",
+      "password": "changeit"
+  }
+
+  ### case: lpk102 rating
+  # @ref lpk102
+  PUT  http://localhost:3000/api/v1/films/30/rating
+  Authorization: Bearer {{lpk102.accessToken}}
+  Content-Type: application/json
+  
+  {
+    "score": 5
+  }

@@ -47,3 +47,23 @@ Content-Type: application/json
     "password": "changeit",
     "role": "USER"
 }
+
+### case: LPK101
+POST /users
+Content-Type: application/json
+
+{
+    "username": "lpk101",
+    "password": "changeit",
+    "role": "ADMIN"
+}
+
+### case: LPK102
+POST /users
+Content-Type: application/json
+
+{
+    "username": "lpk102",
+    "password": "changeit",
+    "role": "ADMIN"
+}

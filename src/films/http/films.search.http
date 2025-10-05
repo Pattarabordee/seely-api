@@ -1,5 +1,5 @@
 ### case: limit page sort
-GET http://localhost:3000/api/v1/films?limit=3&page=1&sortBy=title:ASC
+GET http://localhost:3000/api/v1/films?limit=10&page=1&sortBy=rating:ASC
 Content-Type: application/json
 
 

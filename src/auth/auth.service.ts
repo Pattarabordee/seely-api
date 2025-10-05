@@ -1,4 +1,3 @@
-// auth.service.ts
 import { UsersService } from '@app/users/users.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
